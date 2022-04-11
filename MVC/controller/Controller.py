@@ -2,6 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import *
 from http.cookiejar import Cookie
 from ..model.Core import User
+from ..veiw.MainWindow import MainWindow
 from ..veiw.CookieWindow import *
 from ..veiw.RequestWindow import *
 
@@ -9,6 +10,12 @@ class Controller():
 
     def __init__(self):
         self.user = User()
+        app = QApplication([])
+
+        window = MainWindow(self)
+        window.show()
+
+        app.exec()
 
     def show_requests_list(self, window):
         for i in self.user.requests:
@@ -33,3 +40,14 @@ class Controller():
     def delete_request(self, window):
         window.dialog = DeleteRequestWindow(window)
         window.dialog.show()
+
+    def add_request(self, window):
+        if self.type_choice.currentText() == "GET":
+            self.test.requests.append(self.user.add_request("GET", self.url.text(), self.verify.isChecked()))
+        elif self.type_choice.currentText() == "POST":
+            self.test.requests.append(self.user.add_request("POST", self.url.text(), self.verify.isChecked()))
+        elif self.type_choice.currentText() == "DELETE":
+            self.test.requests.append(self.user.add_request("DELETE", self.url.text(), self.verify.isChecked()))
+
+        self.close()
+        self.window.resize()
