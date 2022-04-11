@@ -1,7 +1,7 @@
 import requests
 import http.cookiejar
 
-def showCookie(self):
+def show_cookie(self):
 		if len(self.value) > 100:
 			i = 0
 			value = ''
@@ -12,7 +12,7 @@ def showCookie(self):
 			value = self.value
 		return ("Name: %s Domain: %s Secure: %s Path: '%s' Version: %s Port: %s\nValue: %s" % (self.name, self.value, self.secure, self.path, self.version, self.port, self.value))
 
-http.cookiejar.Cookie.__str__ = showCookie
+http.cookiejar.Cookie.__str__ = show_cookie
 
 class User():
 	def __init__(self):
@@ -37,6 +37,16 @@ class User():
 		if comment == "":
 			comment = None
 
+		try:
+			version = int(version)
+		except:
+			version = 0
+
+		try:
+			port = int(port)
+		except:
+			port = None
+		
 		required_args = {
 		'name': name,
 		'value': value

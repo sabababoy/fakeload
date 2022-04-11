@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         self.top_layout = QHBoxLayout()
 
         self.add_cookie_button = QPushButton('Set Cookies')
-        # self.add_cookie_button.clicked.connect(self.add_cookies)
+        self.add_cookie_button.clicked.connect(lambda: self.controller.mainWindowController.add_cookies(self))
 
         self.bottom_layout = QHBoxLayout()
         self.add_request_button = QPushButton('Add')
