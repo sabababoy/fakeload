@@ -16,13 +16,13 @@ class MainWindow(QMainWindow):
         self.top_layout = QHBoxLayout()
 
         self.add_cookie_button = QPushButton('Set Cookies')
-        self.add_cookie_button.clicked.connect(lambda: self.controller.mainWindowController.add_cookies(self))
+        self.add_cookie_button.clicked.connect(lambda: self.controller.main_window_controller.add_cookies(self))
 
         self.bottom_layout = QHBoxLayout()
         self.add_request_button = QPushButton('Add')
-        # self.add_request_button.clicked.connect(self.controller.add_request)
+        self.add_request_button.clicked.connect(lambda: self.controller.add_request_window_controller.add_request(self))
         self.delete_request_button = QPushButton('Delete')
-        # self.delete_request_button.clicked.connect(self.controller.delete_request)
+        self.delete_request_button.clicked.connect(lambda: self.controller.delete_request_window_controller.delete_request(self))
 
         self.req_lbl = QLabel('Requests:')
 
@@ -39,4 +39,4 @@ class MainWindow(QMainWindow):
         self.app_layout.addLayout(self.requests_list_layout)
         self.app_layout.addLayout(self.bottom_layout)
 
-        self.controller.show_requests_list(self)
+        self.controller.main_window_controller.show_requests_list(self)

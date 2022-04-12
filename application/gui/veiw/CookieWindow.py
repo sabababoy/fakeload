@@ -7,7 +7,6 @@ class CookieWindow(QMainWindow):
 		
 		super().__init__()
 		self.controller = controller
-		self.controller.window = self
 		self.setMinimumWidth(500)
 
 		self.add_cookie_button = QPushButton('Add')

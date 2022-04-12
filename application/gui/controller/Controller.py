@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import *
 from http.cookiejar import Cookie
 from ..veiw.MainWindow import MainWindow
 from ..veiw.CookieWindow import *
-# from ..veiw.RequestWindow import *
+from ..veiw.RequestWindow import *
 
 class Controller():
 
@@ -11,6 +11,8 @@ class Controller():
         self.user = user
         self.main_window_controller = MainWindowController(self)
         self.cookies_window_controller = CookiesWindowController(self)
+        self.add_request_window_controller = AddRequestsWindowController(self)
+        self.delete_request_window_controller = DeleteRequestWindowController(self)
 
         app = QApplication([])
 
@@ -19,32 +21,6 @@ class Controller():
 
         app.exec()
 
-    def show_requests_list(self, window):
-        for i in self.user.requests:
-            request_layout = QHBoxLayout()
-            type_label = QLabel(i.type)
-            url_label = QLabel(i.url)
-            request_layout.addWidget(type_label)
-            request_layout.addWidget(url_label)
-
-            request_widget = QWidget()
-            request_widget.setLayout(request_layout)
-            window.requests_list_layout.addWidget(request_widget)
-
-    def delete_request(self, window):
-        window.dialog = DeleteRequestWindow(window)
-        window.dialog.show()
-
-    def add_request(self, window):
-        if self.type_choice.currentText() == "GET":
-            self.test.requests.append(self.user.add_request("GET", self.url.text(), self.verify.isChecked()))
-        elif self.type_choice.currentText() == "POST":
-            self.test.requests.append(self.user.add_request("POST", self.url.text(), self.verify.isChecked()))
-        elif self.type_choice.currentText() == "DELETE":
-            self.test.requests.append(self.user.add_request("DELETE", self.url.text(), self.verify.isChecked()))
-
-        self.close()
-        self.window.resize()
 
 class MainWindowController():
     def __init__(self, mainController):
@@ -55,8 +31,20 @@ class MainWindowController():
         dialog.show()
 
     def add_request(self, window):
-        window.dialog = AddRequestWindow(window)
+        window.dialog = AddRequestWindow(self.mainController,window)
         window.dialog.show()
+
+    def show_requests_list(self, window):
+        for i in self.mainController.user.requests:
+            request_layout = QHBoxLayout()
+            type_label = QLabel(i.type)
+            url_label = QLabel(i.url)
+            request_layout.addWidget(type_label)
+            request_layout.addWidget(url_label)
+
+            request_widget = QWidget()
+            request_widget.setLayout(request_layout)
+            window.requests_list_layout.addWidget(request_widget)
 
 class CookiesWindowController():
     def __init__(self, mainController):
@@ -107,3 +95,40 @@ class CookiesWindowController():
             window.dialog = CookieWindow(self.mainController)
             window.dialog.show()
             window.close()
+
+class AddRequestsWindowController():
+    def __init__(self, mainController):
+        self.mainController = mainController
+
+    def add_request(self, window):
+        window.dialog = AddRequestWindow(self.mainController, window)
+        window.dialog.show()
+
+    def confirm(self, window, main_window):
+        window.controller.user.add_request(window.type_choice.currentText(), window.url.text(),  window.verify.isChecked())
+        window.close()
+        main_window.close()
+        window.dialog = MainWindow(self.mainController)
+        window.dialog.show()
+
+    def cancel(self, window):
+        window.close()
+
+class DeleteRequestWindowController():
+    def __init__(self, mainController):
+        self.mainController = mainController
+
+    def delete_request(self, window):
+        window.dialog = DeleteRequestWindow(self.mainController, window)
+        window.dialog.show()
+
+    def confirm(self, window, mainWindow):
+        if window.choice.currentIndex() >= 0:
+            window.controller.user.requests.pop(window.choice.currentIndex())
+            mainWindow.close()
+            window.dialog = MainWindow(self.mainController)
+            window.dialog.show()
+            window.close()
+    
+    def cancel(self, window):
+        window.close()
