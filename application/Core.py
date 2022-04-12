@@ -1,3 +1,4 @@
+from wsgiref.util import request_uri
 import requests
 import http.cookiejar
 
@@ -71,6 +72,14 @@ class User():
 
 	def add_request(self, type, url, verify):
 		self.requests.append(Request(type, url, verify))
+
+	def send(self, request):
+		if request.type == "GET":
+			return self.session.get(request.url, verify=request.verify)
+		elif request.type == "POST":
+			return self.session.get(request.url, verify=request.verify)
+		elif request.type == "DELETE":
+			return self.session.get(request.url, verify=request.verify)
 
 
 class SourcePortAdapter(requests.adapters.HTTPAdapter):

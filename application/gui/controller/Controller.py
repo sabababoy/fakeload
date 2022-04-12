@@ -25,6 +25,7 @@ class Controller():
 class MainWindowController():
     def __init__(self, mainController):
         self.mainController = mainController
+        self.requests_list = []
 
     def add_cookies(self, window):
         dialog = CookieWindow(self.mainController)
@@ -35,16 +36,35 @@ class MainWindowController():
         window.dialog.show()
 
     def show_requests_list(self, window):
+        if len(self.mainController.user.requests):
+            window.req_lbl.setText('Requests:')
         for i in self.mainController.user.requests:
+            window.start_button.setEnabled(True)
             request_layout = QHBoxLayout()
             type_label = QLabel(i.type)
             url_label = QLabel(i.url)
             request_layout.addWidget(type_label)
             request_layout.addWidget(url_label)
 
-            request_widget = QWidget()
-            request_widget.setLayout(request_layout)
-            window.requests_list_layout.addWidget(request_widget)
+            window.requests_list_layout.addLayout(request_layout)
+
+    def start(self, window):
+        window.start_button.setEnabled(False)
+
+        for i in range(len(window.requests_list_layout.children())):
+            try:
+                response = self.mainController.user.send(self.mainController.user.requests[i])
+                if str(response) == "<Response [200]>":
+                    window.requests_list_layout.children()[i].itemAt(0).widget().setStyleSheet("color:green")
+                    window.requests_list_layout.children()[i].itemAt(1).widget().setStyleSheet("color:green")
+                else:
+                    window.requests_list_layout.children()[i].itemAt(0).widget().setStyleSheet("color:yellow")
+                    window.requests_list_layout.children()[i].itemAt(1).widget().setStyleSheet("color:yellow")
+            except:
+                window.requests_list_layout.children()[i].itemAt(0).widget().setStyleSheet("color:red")
+                window.requests_list_layout.children()[i].itemAt(1).widget().setStyleSheet("color:red")
+        window.start_button.setEnabled(True)
+        
 
 class CookiesWindowController():
     def __init__(self, mainController):
@@ -67,7 +87,7 @@ class CookiesWindowController():
         window.close()
 	
     def delete_cookie(self, window):
-        window.dialog = DeleteCookieWindow()
+        window.dialog = DeleteCookieWindow(self.mainController)
         window.dialog.show()
         window.close()
 
@@ -91,7 +111,7 @@ class CookiesWindowController():
 
     def delete(self, window):
         if window.choice.currentIndex() >= 0:
-            window.controller.user.my_cookies_list.pop(window.choice.currentIndex())
+            window.controller.user.cookies.pop(window.choice.currentIndex())
             window.dialog = CookieWindow(self.mainController)
             window.dialog.show()
             window.close()
@@ -105,11 +125,18 @@ class AddRequestsWindowController():
         window.dialog.show()
 
     def confirm(self, window, main_window):
-        window.controller.user.add_request(window.type_choice.currentText(), window.url.text(),  window.verify.isChecked())
-        window.close()
-        main_window.close()
-        window.dialog = MainWindow(self.mainController)
-        window.dialog.show()
+        if window.url.text() != '' and ' ' not in window.url.text():
+            window.controller.user.add_request(window.type_choice.currentText(), window.url.text(),  window.verify.isChecked())
+            window.close()
+            main_window.close()
+            window.dialog = MainWindow(self.mainController)
+            window.dialog.show()
+        elif ' ' in window.url.text():
+            window.warning_label.setText("Url cannot contain spaces")
+            window.warning_label.setStyleSheet("color: red")
+        else:
+            window.warning_label.setText("You must specify url. Example: google.com")
+            window.warning_label.setStyleSheet("color: red")
 
     def cancel(self, window):
         window.close()

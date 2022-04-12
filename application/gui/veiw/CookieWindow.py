@@ -30,7 +30,7 @@ class CookieWindow(QMainWindow):
 		self.controller.cookies_window_controller.show_cookies(self)
 
 		self.add_cookie_button.clicked.connect(lambda: self.controller.cookies_window_controller.add_cookie(self))
-		self.delete_cookie_button.clicked.connect(lambda: self.controller.cookies_window_controller.add_cookie.delete_cookie(self))
+		self.delete_cookie_button.clicked.connect(lambda: self.controller.cookies_window_controller.delete_cookie(self))
 
 
 class AddCookieWindow(QMainWindow):
@@ -106,23 +106,11 @@ class DeleteCookieWindow(QMainWindow):
 		self.mainWidget.setLayout(self.windowLayout)
 		
 		
-		for cookie in self.controller.user.my_cookies_list:
-			self.choice.addItem(cookie.required_args['name'])
+		for cookie in self.controller.user.cookies:
+			self.choice.addItem(cookie.name)
 		
 		self.choiceLayout.addWidget(self.choice)
 		self.buttonsLayout.addWidget(self.deleteButton)
 		self.buttonsLayout.addWidget(self.cancelButton)
 
 		self.setCentralWidget(self.mainWidget)
-
-	# def delete(self):
-	# 	if self.choice.currentIndex() >= 0:
-	# 		self.controller.user.my_cookies_list.pop(self.choice.currentIndex())
-	# 		self.dialog = CookieWindow()
-	# 		self.dialog.show()
-	# 		self.close()
-
-	# def cancel(self):
-	# 	self.dialog = CookieWindow()
-	# 	self.dialog.show()
-	# 	self.close()

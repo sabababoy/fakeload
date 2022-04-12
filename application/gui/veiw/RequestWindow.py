@@ -11,6 +11,7 @@ class AddRequestWindow(QMainWindow):
 		self.mainLayout = QVBoxLayout()
 		self.mainWidget = QWidget()
 
+		self.warning_label = QLabel('')
 		self.type_choice = QComboBox()
 		self.url = QLineEdit()
 		self.verify = QCheckBox()
@@ -33,6 +34,7 @@ class AddRequestWindow(QMainWindow):
 
 
 		self.mainLayout.addLayout(self.requestLayout)
+		self.mainLayout.addWidget(self.warning_label)
 		self.mainLayout.addLayout(self.buttonsLayout)
 		self.mainWidget.setLayout(self.mainLayout)
 
@@ -46,7 +48,7 @@ class DeleteRequestWindow(QMainWindow):
 
 		self.mainWidget = QWidget()
 		self.choice = QComboBox()
-		self.deleteButton = QPushButton("Delete")
+		self.deleteButton = QPushButton("Confirm")
 		self.cancelButton = QPushButton("Cancel")
 		self.deleteButton.clicked.connect(lambda: self.controller.delete_request_window_controller.confirm(self, self.mainWindow))
 		self.cancelButton.clicked.connect(lambda: self.controller.delete_request_window_controller.cancel(self))

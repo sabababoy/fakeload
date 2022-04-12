@@ -6,6 +6,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         
         self.controller = controller
+        self.setMinimumWidth(500)
 
         self.app = QWidget()
         self.app_layout = QVBoxLayout()
@@ -23,8 +24,13 @@ class MainWindow(QMainWindow):
         self.add_request_button.clicked.connect(lambda: self.controller.add_request_window_controller.add_request(self))
         self.delete_request_button = QPushButton('Delete')
         self.delete_request_button.clicked.connect(lambda: self.controller.delete_request_window_controller.delete_request(self))
+        self.start_button = QPushButton('Start')
+        self.start_button.setFixedHeight(50)
+        self.start_button.setStyleSheet("background-color: green")
+        self.start_button.setEnabled(False)
+        self.start_button.clicked.connect(lambda: self.controller.main_window_controller.start(self))
 
-        self.req_lbl = QLabel('Requests:')
+        self.req_lbl = QLabel('No requests')
 
         self.top_layout.addWidget(self.req_lbl)
         self.top_layout.addWidget(self.add_cookie_button)
@@ -38,5 +44,6 @@ class MainWindow(QMainWindow):
         self.app_layout.addLayout(self.top_layout)
         self.app_layout.addLayout(self.requests_list_layout)
         self.app_layout.addLayout(self.bottom_layout)
+        self.app_layout.addWidget(self.start_button)
 
         self.controller.main_window_controller.show_requests_list(self)
