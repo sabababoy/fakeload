@@ -11,7 +11,7 @@ class CookieWindow(QMainWindow):
 
 		self.add_cookie_button = QPushButton('Add')
 		self.delete_cookie_button = QPushButton('Delete')
-		self.set_cookies_button = QPushButton('Set')
+		# self.set_cookies_button = QPushButton('Set')
 
 		self.cookie_window_layout = QVBoxLayout()
 		self.cookie_window = QWidget()
@@ -23,7 +23,7 @@ class CookieWindow(QMainWindow):
 
 		self.menu_layout.addWidget(self.add_cookie_button)
 		self.menu_layout.addWidget(self.delete_cookie_button)
-		self.menu_layout.addWidget(self.set_cookies_button)
+		# self.menu_layout.addWidget(self.set_cookies_button)
 
 		self.cookie_window_layout.addLayout(self.menu_layout)
 
@@ -106,7 +106,7 @@ class DeleteCookieWindow(QMainWindow):
 		self.mainWidget.setLayout(self.windowLayout)
 		
 		
-		for cookie in self.controller.user.cookies:
+		for cookie in self.controller.user.session.cookies:
 			self.choice.addItem(cookie.name)
 		
 		self.choiceLayout.addWidget(self.choice)

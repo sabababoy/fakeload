@@ -17,7 +17,6 @@ http.cookiejar.Cookie.__str__ = show_cookie
 
 class User():
 	def __init__(self):
-		self.cookies = []
 		self.requests = []
 		self.session = requests.Session()
 
@@ -68,7 +67,7 @@ class User():
 		}
 
 		cookie = requests.cookies.create_cookie(**required_args, **optional_args)
-		self.cookies.append(cookie)
+		self.session.cookies.set_cookie(cookie)
 
 	def add_request(self, type, url, verify):
 		self.requests.append(Request(type, url, verify))

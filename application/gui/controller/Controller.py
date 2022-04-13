@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import *
 from http.cookiejar import Cookie
+import threading
 
 from requests import request
 from ..veiw.MainWindow import MainWindow
@@ -41,6 +42,8 @@ class MainWindowController():
         window.requests_list = []
         if len(self.mainController.user.requests):
             window.req_lbl.setText('Requests:')
+            window.scroll_area.show()
+
         for i in self.mainController.user.requests:
             window.start_button.setEnabled(True)
             request_layout = QHBoxLayout()
@@ -54,7 +57,6 @@ class MainWindowController():
         for req in window.requests_list:
             window.requests_list_layout.addWidget(req)
         
-        window.scroll_area.show()
 
     def send_requests(self, window):
         for request in window.requests_list:
@@ -74,7 +76,8 @@ class MainWindowController():
         window.start_button.setEnabled(False)
         window.start_button.setStyleSheet("background-color:grey")
         
-        self.send_requests(window)
+        thread = threading.Thread(target=self.send_requests, args=(window,))
+        thread.start()
 
         window.start_button.setEnabled(True)
         window.start_button.setStyleSheet("background-color:green")
@@ -85,10 +88,10 @@ class CookiesWindowController():
         self.mainController = mainController
 
     def show_cookies(self, window):
-        if len(self.mainController.user.cookies):
+        if len(self.mainController.user.session.cookies):
             window.cookie_label = QLabel('Cookies:')
             window.cookie_window_layout.addWidget(window.cookie_label)
-            for cookie in self.mainController.user.cookies:
+            for cookie in self.mainController.user.session.cookies:
                 window.cookie_window_layout.addWidget(QLabel(str(cookie)))
 
         else:
@@ -124,11 +127,10 @@ class CookiesWindowController():
         window.close()
 
     def delete(self, window):
-        if window.choice.currentIndex() >= 0:
-            window.controller.user.cookies.pop(window.choice.currentIndex())
-            window.dialog = CookieWindow(self.mainController)
-            window.dialog.show()
-            window.close()
+        window.controller.user.session.cookies.pop(window.choice.currentText())
+        window.dialog = CookieWindow(self.mainController)
+        window.dialog.show()
+        window.close()
 
 class AddRequestsWindowController():
     def __init__(self, mainController):
