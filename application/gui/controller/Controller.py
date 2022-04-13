@@ -1,6 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import *
 from http.cookiejar import Cookie
+
+from requests import request
 from ..veiw.MainWindow import MainWindow
 from ..veiw.CookieWindow import *
 from ..veiw.RequestWindow import *
@@ -36,6 +38,7 @@ class MainWindowController():
         window.dialog.show()
 
     def show_requests_list(self, window):
+        window.requests_list = []
         if len(self.mainController.user.requests):
             window.req_lbl.setText('Requests:')
         for i in self.mainController.user.requests:
@@ -45,25 +48,36 @@ class MainWindowController():
             url_label = QLabel(i.url)
             request_layout.addWidget(type_label)
             request_layout.addWidget(url_label)
+            request_widget = QWidget()
+            request_widget.setLayout(request_layout)
+            window.requests_list.append(request_widget)
+        for req in window.requests_list:
+            window.requests_list_layout.addWidget(req)
+        
+        window.scroll_area.show()
 
-            window.requests_list_layout.addLayout(request_layout)
+    def send_requests(self, window):
+        for request in window.requests_list:
+            try:
+                response = self.mainController.user.send(self.mainController.user.requests[window.requests_list.index(request)])
+                if str(response) == "<Response [200]>":
+                    request.children()[1].setStyleSheet("color:green")
+                    request.children()[2].setStyleSheet("color:green")
+                else:
+                    request.children()[1].setStyleSheet("color:yellow")
+                    request.children()[2].setStyleSheet("color:ywllow")
+            except:
+                request.children()[1].setStyleSheet("color:red")
+                request.children()[2].setStyleSheet("color:red")
 
     def start(self, window):
         window.start_button.setEnabled(False)
+        window.start_button.setStyleSheet("background-color:grey")
+        
+        self.send_requests(window)
 
-        for i in range(len(window.requests_list_layout.children())):
-            try:
-                response = self.mainController.user.send(self.mainController.user.requests[i])
-                if str(response) == "<Response [200]>":
-                    window.requests_list_layout.children()[i].itemAt(0).widget().setStyleSheet("color:green")
-                    window.requests_list_layout.children()[i].itemAt(1).widget().setStyleSheet("color:green")
-                else:
-                    window.requests_list_layout.children()[i].itemAt(0).widget().setStyleSheet("color:yellow")
-                    window.requests_list_layout.children()[i].itemAt(1).widget().setStyleSheet("color:yellow")
-            except:
-                window.requests_list_layout.children()[i].itemAt(0).widget().setStyleSheet("color:red")
-                window.requests_list_layout.children()[i].itemAt(1).widget().setStyleSheet("color:red")
         window.start_button.setEnabled(True)
+        window.start_button.setStyleSheet("background-color:green")
         
 
 class CookiesWindowController():

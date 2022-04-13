@@ -6,7 +6,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         
         self.controller = controller
-        self.setMinimumWidth(500)
+        self.setFixedWidth(600)
+        self.setMaximumHeight(500)
 
         self.app = QWidget()
         self.app_layout = QVBoxLayout()
@@ -32,17 +33,25 @@ class MainWindow(QMainWindow):
 
         self.req_lbl = QLabel('No requests')
 
+        self.requests_list = []
+
         self.top_layout.addWidget(self.req_lbl)
         self.top_layout.addWidget(self.add_cookie_button)
 
         self.bottom_layout.addWidget(self.add_request_button)
         self.bottom_layout.addWidget(self.delete_request_button)
 
-
         self.requests_list_layout = QVBoxLayout()
+        self.requests_list_widget = QWidget()
+        self.requests_list_widget.setLayout(self.requests_list_layout)
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.hide()
+        self.scroll_area.setWidget(self.requests_list_widget)
 
         self.app_layout.addLayout(self.top_layout)
-        self.app_layout.addLayout(self.requests_list_layout)
+        self.app_layout.addWidget(self.scroll_area)
         self.app_layout.addLayout(self.bottom_layout)
         self.app_layout.addWidget(self.start_button)
 
