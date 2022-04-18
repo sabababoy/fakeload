@@ -13,6 +13,7 @@ class AddRequestWindow(QMainWindow):
 
 		self.warning_label = QLabel('')
 		self.type_choice = QComboBox()
+		self.http_type = QComboBox()
 		self.url = QLineEdit()
 		self.verify = QCheckBox()
 		self.confirm = QPushButton("Confirm")
@@ -21,12 +22,16 @@ class AddRequestWindow(QMainWindow):
 		self.cancel_button.clicked.connect(lambda: self.controller.add_request_window_controller.cancel(self))
 		self.requestLayout = QHBoxLayout()
 		self.requestLayout.addWidget(self.type_choice)
+		self.requestLayout.addWidget(self.http_type)
 		self.requestLayout.addWidget(self.url)
 		self.requestLayout.addWidget(self.verify)
 
 		self.buttonsLayout = QHBoxLayout()
 		self.buttonsLayout.addWidget(self.confirm)
 		self.buttonsLayout.addWidget(self.cancel_button)
+
+		self.http_type.addItem("https://")
+		self.http_type.addItem("http://")
 
 		self.type_choice.addItem("GET")
 		self.type_choice.addItem("POST")

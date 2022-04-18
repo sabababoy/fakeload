@@ -7,7 +7,6 @@ class MainWindow(QMainWindow):
         
         self.controller = controller
         self.setFixedWidth(600)
-        self.setMaximumHeight(500)
 
         self.app = QWidget()
         self.app_layout = QVBoxLayout()
@@ -30,6 +29,8 @@ class MainWindow(QMainWindow):
         self.start_button.setStyleSheet("background-color: green")
         self.start_button.setEnabled(False)
         self.start_button.clicked.connect(lambda: self.controller.main_window_controller.start(self))
+        self.results_button = QPushButton('Results')
+        self.results_button.clicked.connect(lambda: self.controller.main_window_controller.results(self))
 
         self.req_lbl = QLabel('No requests')
 
@@ -53,6 +54,7 @@ class MainWindow(QMainWindow):
         self.app_layout.addLayout(self.top_layout)
         self.app_layout.addWidget(self.scroll_area)
         self.app_layout.addLayout(self.bottom_layout)
+        self.app_layout.addWidget(self.results_button)
         self.app_layout.addWidget(self.start_button)
 
         self.controller.main_window_controller.show_requests_list(self)

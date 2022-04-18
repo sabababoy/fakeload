@@ -19,6 +19,7 @@ class User():
 	def __init__(self):
 		self.requests = []
 		self.session = requests.Session()
+		self.responses = []
 
 	def add_cookie(self, name, value, domain, secure,
 		path = '/',
